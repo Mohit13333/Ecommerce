@@ -22,7 +22,7 @@ server.use(
 server.use(
   cors({
     exposedHeaders: ["X-Total-Count"],
-    origin: "http://localhost:5173",
+    origin: "https://click-shop-ecom.netlify.app",
     credentials: true,
   })
 );
