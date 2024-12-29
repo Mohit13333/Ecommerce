@@ -27,7 +27,7 @@ function ProductForm() {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const [openModal, setOpenModal] = useState(null);
-//   const alert = useAlert();
+
 
   const colors = [
     {
@@ -154,13 +154,10 @@ function ProductForm() {
           if (params.id) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
-            dispatch(updateProductAsync(product));
-            alert.success('Product Updated');
-
+            dispatch(updateProductAction(product));
             reset();
           } else {
             dispatch(createProductAction(product));
-            alert.success('Product Created');
             reset();
           }
         })}

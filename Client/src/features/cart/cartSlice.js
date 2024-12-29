@@ -69,12 +69,11 @@ export const cartSlice = createSlice({
 });
 
 // Thunk-like functions for async actions
-export const addToCartAsync = (item, alert) => async (dispatch) => {
+export const addToCartAsync = (item) => async (dispatch) => {
   dispatch(cartSlice.actions.addToCartPending());
   try {
     const response = await addToCart(item);
     dispatch(cartSlice.actions.addToCartFulfilled(response.data));
-    alert.success('Item Added to Cart');
   } catch (error) {
     console.error('Failed to add item to cart:', error);
     dispatch(cartSlice.actions.addToCartRejected());

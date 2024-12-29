@@ -9,7 +9,6 @@ import {
 } from '../../product/productSlice';
 import { useParams } from 'react-router-dom';
 import { addToCartAsync, selectItems } from '../../cart/cartSlice';
-import { useAlert } from 'react-alert';
 import { Grid } from 'react-loader-spinner';
 
 function classNames(...classes) {
@@ -23,7 +22,6 @@ export default function AdminProductDetail() {
   const product = useSelector(selectProductById);
   const dispatch = useDispatch();
   const params = useParams();
-  const alert = useAlert();
   const status = useSelector(selectProductListStatus);
 
   const handleCart = (e) => {
@@ -40,9 +38,7 @@ export default function AdminProductDetail() {
         newItem.size = selectedSize;
       }
       dispatch(addToCartAsync(newItem));
-      alert.success('Item added to Cart');
     } else {
-      alert.error('Item already added');
     }
   };
 
