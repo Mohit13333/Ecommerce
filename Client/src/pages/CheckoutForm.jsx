@@ -59,7 +59,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Use HTTP for local development
-        return_url: `http://localhost:5173/order-success/${currentOrder.id}`,
+        return_url: `${import.meta.env.VITE_BACKEND_URI}/order-success/${currentOrder.id}`,
       },
     });
 

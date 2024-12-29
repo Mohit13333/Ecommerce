@@ -84,7 +84,7 @@ export const resetPasswordRequest = async (req, res) => {
     await user.save();
 
     // Create the reset password URL
-    const resetPageLink = `http://localhost:5173/reset-password?token=${encodeURIComponent(
+    const resetPageLink = `https://click-shop-ecom.netlify.app/reset-password?token=${encodeURIComponent(
       token
     )}&email=${encodeURIComponent(email)}`;
 
