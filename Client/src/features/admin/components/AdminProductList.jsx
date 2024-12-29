@@ -298,7 +298,7 @@ function ProductGrid({ products }) {
           <div key={product.id} className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white">
             {product.thumbnail ? (
               <img 
-                src={product.thumbnail} 
+                src={product?.thumbnail} 
                 alt={product.title} 
                 className="h-60 w-full object-cover object-center group-hover:opacity-75" 
               />

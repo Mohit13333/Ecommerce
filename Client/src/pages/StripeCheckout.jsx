@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import axios from "axios"; // Import axios
 
 import CheckoutForm from "./CheckoutForm";
-import "../Stripe.css";
+// import "../Stripe.css";
 import { selectCurrentOrder } from "../features/order/orderSlice";
 
 // Move loadStripe into an async function to avoid direct await usage

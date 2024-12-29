@@ -21,7 +21,6 @@ function AdminOrders() {
   const orders = useSelector(selectOrders);
   const totalOrders = useSelector(selectTotalOrders);
   const [editableOrderId, setEditableOrderId] = useState(-1);
-  console.log(orders);
   const [sort, setSort] = useState({});
 
   const handleEdit = (order) => {
@@ -76,212 +75,197 @@ function AdminOrders() {
   }, [dispatch, page, sort]);
 
   return (
-    <div className="overflow-x-auto">
-      <div className="bg-gray-100 flex items-center justify-center font-sans overflow-hidden">
-        <div className="w-full">
-          <div className="bg-white shadow-md rounded my-6">
-            <table className="w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                  <th
-                    className="py-3 px-0 text-left cursor-pointer"
-                    onClick={() =>
-                      handleSort({
-                        sort: "id",
-                        order: sort?._order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    Order Id#
-                    {sort._sort === "id" &&
-                      (sort._order === "asc" ? (
-                        <ArrowUpIcon className="w-4 h-4 inline" />
-                      ) : (
-                        <ArrowDownIcon className="w-4 h-4 inline" />
-                      ))}
-                  </th>
-                  <th className="py-3 px-0 text-left">Item details</th>
-                  <th className="py-3 px-0 text-center">Shipping address</th>
-                  <th className="py-3 px-0 text-center">Order Status</th>
-                  <th className="py-3 px-0 text-center">Payment Method</th>
-                  <th className="py-3 px-0 text-center">payment status</th>
-                  <th className="py-3 px-0 text-center">Actions perform</th>
-                  <th
-                    className="py-3 px-0 text-left cursor-pointer"
-                    onClick={() =>
-                      handleSort({
-                        sort: "createdAt",
-                        order: sort?._order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    Order Time
-                    {sort._sort === "createdAt" &&
-                      (sort._order === "asc" ? (
-                        <ArrowUpIcon className="w-4 h-4 inline" />
-                      ) : (
-                        <ArrowDownIcon className="w-4 h-4 inline" />
-                      ))}
-                  </th>
-                  <th
-                    className="py-3 px-0 text-left cursor-pointer"
-                    onClick={() =>
-                      handleSort({
-                        sort: "updatedAt",
-                        order: sort?._order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    Last Updated
-                    {sort._sort === "updatedAt" &&
-                      (sort._order === "asc" ? (
-                        <ArrowUpIcon className="w-4 h-4 inline" />
-                      ) : (
-                        <ArrowDownIcon className="w-4 h-4 inline" />
-                      ))}
-                  </th>
-                  <th
-                    className="py-3 px-0 text-left cursor-pointer"
-                    onClick={() =>
-                      handleSort({
-                        sort: "totalAmount",
-                        order: sort?._order === "asc" ? "desc" : "asc",
-                      })
-                    }
-                  >
-                    Total Amount
-                    {sort._sort === "totalAmount" &&
-                      (sort._order === "asc" ? (
-                        <ArrowUpIcon className="w-4 h-4 inline" />
-                      ) : (
-                        <ArrowDownIcon className="w-4 h-4 inline" />
-                      ))}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-600 text-sm font-light">
-                {orders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="border-b border-gray-200 hover:bg-gray-100"
-                  >
-                    <td className="py-3 px-0 text-left whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="mr-2"></div>
-                        <span className="font-medium">{order.id}</span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-0 text-left">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center">
-                          <div className="mr-2">
-                            {item.productId?.thumbnail ? (
-                              <img
-                                className="w-6 h-6 rounded-full"
-                                src={item.productId.thumbnail}
-                                alt={item.productId.title}
-                              />
-                            ) : (
-                              <div className="w-6 h-6 rounded-full bg-gray-200"></div>
-                            )}
-                          </div>
-                          <span>
-                            {item.productId
-                              ? `${item.productId.title} - #${item.quantity} - ₹${item.productId.discountPrice}`
-                              : "Product not available"}
-                          </span>
-                        </div>
-                      ))}
-                    </td>
-                    <td className="py-3 px-0 text-center">
-                      <div>
-                        <div>
-                          <strong>{order.selectedAddress.name}</strong>,
-                        </div>
-                        <div>{order.selectedAddress.street},</div>
-                        <div>{order.selectedAddress.city}, </div>
-                        <div>{order.selectedAddress.state}, </div>
-                        <div>{order.selectedAddress.pinCode}, </div>
-                        <div>{order.selectedAddress.phone}, </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-0 text-center">
-                      {order.id === editableOrderId ? (
-                        <select onChange={(e) => handleOrderStatus(e, order)}>
-                          <option value="pending">Pending</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
-                          <option value="canceled">Canceled</option>
-                          <option value="failed">Failed</option>
-                        </select>
-                      ) : (
-                        <span
-                          className={`${chooseColor(order.status)} py-1 px-3 rounded-full text-xs`}
-                        >
-                          {order.status}
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="py-3 px-0 text-center">
-                      <div className="flex items-center justify-center">
-                        {order.paymentMethod}
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-0 text-center">
-                      {order.id === editableOrderId ? (
-                        <select onChange={(e) => handleOrderPaymentStatus(e, order)}>
-                          <option value="pending">Pending</option>
-                          <option value="received">Paid</option>
-                          <option value="failed">Failed</option>
-                          <option value="refunded">Refunded</option>
-                        </select>
-                      ) : (
-                        <span
-                          className={`${chooseColor(order.paymentStatus)} py-1 px-3 rounded-full text-xs`}
-                        >
-                          {order.paymentStatus}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-0 text-center">
-                      <button
-                        onClick={() => handleEdit(order)}
-                        className="p-2 rounded-lg bg-blue-500 text-white"
-                      >
-                        <PencilIcon className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={handleShow}
-                        className="p-2 rounded-lg bg-green-500 text-white ml-2"
-                      >
-                        <EyeIcon className="w-4 h-4" />
-                      </button>
-                    </td>
-                    <td className="py-3 px-0 text-center">
-                      <span className="text-xs">
-                        {new Date(order.createdAt).toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="py-3 px-0 text-center">
-                      <span className="text-xs">
-                        {new Date(order.updatedAt).toLocaleString()}
-                      </span>
-                    </td>
-                  </tr>
+    <div className="flex flex-col items-center">
+      <div className="bg-gray-100 w-full p-4">
+        <div className="flex justify-between mb-4">
+          <h1 className="text-xl font-bold">Orders</h1>
+          <div className="flex space-x-2 mb-4">
+            <button
+              onClick={() =>
+                handleSort({
+                  sort: "id",
+                  order: sort?._order === "asc" ? "desc" : "asc",
+                })
+              }
+              className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${
+                sort._sort === "id"
+                  ? sort._order === "asc"
+                    ? "bg-blue-500 text-white"
+                    : "bg-blue-400 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Sort by Order ID
+              {sort._sort === "id" &&
+                (sort._order === "asc" ? (
+                  <ArrowDownIcon className="inline w-4 h-4 ml-2" />
+                ) : (
+                  <ArrowUpIcon className="inline w-4 h-4 ml-2" />
                 ))}
-              </tbody>
-            </table>
+            </button>
+
+            <button
+              onClick={() =>
+                handleSort({
+                  sort: "createdAt",
+                  order: sort?._order === "asc" ? "desc" : "asc",
+                })
+              }
+              className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${
+                sort._sort === "createdAt"
+                  ? sort._order === "asc"
+                    ? "bg-blue-500 text-white"
+                    : "bg-blue-400 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Sort by Order Time
+              {sort._sort === "createdAt" &&
+                (sort._order === "asc" ? (
+                  <ArrowDownIcon className="inline w-4 h-4 ml-2" />
+                ) : (
+                  <ArrowUpIcon className="inline w-4 h-4 ml-2" />
+                ))}
+            </button>
+
+            <button
+              onClick={() =>
+                handleSort({
+                  sort: "totalAmount",
+                  order: sort?._order === "asc" ? "desc" : "asc",
+                })
+              }
+              className={`flex items-center px-4 py-2 rounded-lg transition-colors duration-200 ${
+                sort._sort === "totalAmount"
+                  ? sort._order === "asc"
+                    ? "bg-blue-500 text-white"
+                    : "bg-blue-400 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              Sort by Total Amount
+              {sort._sort === "totalAmount" &&
+                (sort._order === "asc" ? (
+                  <ArrowDownIcon className="inline w-4 h-4 ml-2" />
+                ) : (
+                  <ArrowUpIcon className="inline w-4 h-4 ml-2" />
+                ))}
+            </button>
           </div>
-          <Pagination
-            page={page}
-            setPage={setPage}
-            handlePage={setPage} // Change setPage to handlePage
-            totalItems={totalOrders}
-          />
         </div>
+        {orders.map((order) => (
+          <div
+            key={order.id}
+            className="bg-white shadow-lg rounded-lg p-4 mb-4 w-full max-w-md"
+          >
+            <h2 className="text-xl font-bold">Order ID: {order.id}</h2>
+            <div className="flex flex-col">
+              {order.items.map((item, index) => (
+                <div key={index} className="flex items-center my-2">
+                  {item.productId?.thumbnail ? (
+                    <img
+                      className="w-16 h-16 rounded-md"
+                      src={item.productId.thumbnail}
+                      alt={item.productId.title}
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-md bg-gray-200"></div>
+                  )}
+                  <span className="ml-2">
+                    {item.productId
+                      ? `${item.productId.title} - Qty: ${item.quantity} - ₹${item.productId.discountPrice}`
+                      : "Product not available"}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-2">
+              <h3 className="font-bold">Shipping Address:</h3>
+              <p>
+                {order.selectedAddress.name}, {order.selectedAddress.street},{" "}
+                {order.selectedAddress.city}, {order.selectedAddress.state},{" "}
+                {order.selectedAddress.pinCode}, {order.selectedAddress.phone}
+              </p>
+            </div>
+            <div className="flex justify-between mt-4">
+              <div>
+                {order.id === editableOrderId ? (
+                  <select
+                    onChange={(e) => handleOrderStatus(e, order)}
+                    value={order.status}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                    <option value="failed">Failed</option>
+                  </select>
+                ) : (
+                  <span
+                    className={`py-1 px-2 rounded-full text-xs ${chooseColor(
+                      order.status
+                    )}`}
+                  >
+                    Order Status: {order.status}
+                  </span>
+                )}
+              </div>
+              <div>
+                {order.id === editableOrderId ? (
+                  <select
+                    onChange={(e) => handleOrderPaymentStatus(e, order)}
+                    value={order.paymentStatus}
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="received">Paid</option>
+                    <option value="failed">Failed</option>
+                    <option value="refunded">Refunded</option>
+                  </select>
+                ) : (
+                  <span
+                    className={`py-1 px-2 rounded-full text-xs ${chooseColor(
+                      order.paymentStatus
+                    )}`}
+                  >
+                    Payment Status: {order.paymentStatus}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-between mt-4">
+              <div>
+                <h4 className="font-bold">
+                  Total Amount: ₹{order.totalAmount}
+                </h4>
+              </div>
+              <div className="flex">
+                <button
+                  onClick={() => handleEdit(order)}
+                  className="p-2 rounded-lg bg-blue-500 text-white"
+                >
+                  <PencilIcon className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleShow}
+                  className="p-2 rounded-lg bg-green-500 text-white ml-2"
+                >
+                  <EyeIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="text-xs mt-2">
+              <p>Order Time: {new Date(order.createdAt).toLocaleString()}</p>
+              <p>Last Updated: {new Date(order.updatedAt).toLocaleString()}</p>
+            </div>
+          </div>
+        ))}
       </div>
+      <Pagination
+        page={page}
+        setPage={setPage}
+        handlePage={setPage}
+        totalItems={totalOrders}
+      />
     </div>
   );
 }

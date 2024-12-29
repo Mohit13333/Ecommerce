@@ -59,24 +59,23 @@ function Checkout() {
     if (selectedAddress && paymentMethod) {
       const order = {
         items: items.map((item) => ({
-          productId: item.product.id, // Extract productId from the product object
+          productId: item.product.id,
           quantity: item.quantity,
-          price: item.product.price,    
+          price: item.product.price,
         })),
-        totalAmount,                 // Total amount of the order
-        totalItems,                  // Total number of items in the order
-        user: user.id,               // User ID
-        paymentMethod,               // Payment method
-        selectedAddress,             // Selected address
-        status: 'pending',           // Initial order status
+        totalAmount,
+        totalItems,
+        user: user.id,
+        paymentMethod,
+        selectedAddress,
+        status: 'pending',
       };
-  
-      dispatch(createOrderAsync(order)); // Dispatch the action to create the order
+
+      dispatch(createOrderAsync(order));
     } else {
       alert('Please select an address and payment method');
     }
   };
-  
 
   return (
     <>
@@ -103,7 +102,7 @@ function Checkout() {
             <div className="lg:col-span-3">
               {/* Address Form */}
               <form
-                className="bg-white px-5 py-12 mt-12"
+                className="bg-white shadow-md rounded-lg px-8 py-6 mt-12"
                 noValidate
                 onSubmit={handleSubmit((data) => {
                   dispatch(updateUserAsync({
@@ -113,56 +112,52 @@ function Checkout() {
                   reset();
                 })}
               >
-                <div className="space-y-12">
-                  <div className="border-b border-gray-900/10 pb-12">
-                    <h2 className="text-2xl font-semibold leading-7 text-gray-900">Personal Information</h2>
-                    <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+                <h2 className="text-2xl font-semibold leading-7 text-gray-900 mb-4">Personal Information</h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600 mb-6">Use a permanent address where you can receive mail.</p>
 
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                      {['name', 'email', 'phone', 'street', 'city', 'state', 'pinCode'].map((field, index) => (
-                        <div className={field === 'street' ? 'col-span-full' : 'sm:col-span-4'} key={field}>
-                          <label htmlFor={field} className="block text-sm font-medium leading-6 text-gray-900">
-                            {field.charAt(0).toUpperCase() + field.slice(1)}
-                          </label>
-                          <div className="mt-2">
-                            <input
-                              type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
-                              {...register(field, { required: `${field} is required` })}
-                              id={field}
-                              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            />
-                            {errors[field] && <p className="text-red-500">{errors[field].message}</p>}
-                          </div>
-                        </div>
-                      ))}
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 mb-6">
+                  {['name', 'email', 'phone', 'street', 'city', 'state', 'pinCode'].map((field) => (
+                    <div className={field === 'street' ? 'col-span-full' : 'sm:col-span-4'} key={field}>
+                      <label htmlFor={field} className="block text-sm font-medium leading-6 text-gray-900">
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          type={field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text'}
+                          {...register(field, { required: `${field} is required` })}
+                          id={field}
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 placeholder-gray-400 p-2"
+                        />
+                        {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field].message}</p>}
+                      </div>
                     </div>
-                  </div>
+                  ))}
+                </div>
 
-                  <div className="mt-6 flex items-center justify-end gap-x-6">
-                    <button
-                      type="button"
-                      onClick={reset}
-                      className="text-sm font-semibold leading-6 text-gray-900"
-                    >
-                      Reset
-                    </button>
-                    <button
-                      type="submit"
-                      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Add Address
-                    </button>
-                  </div>
+                <div className="flex items-center justify-end gap-x-6">
+                  <button
+                    type="button"
+                    onClick={reset}
+                    className="text-sm font-semibold leading-6 text-gray-900"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Add Address
+                  </button>
                 </div>
               </form>
 
               {/* Address List */}
-              <div className="border-b border-gray-900/10 pb-12">
+              <div className="border-b border-gray-900/10 pb-12 mt-10">
                 <h2 className="text-base font-semibold leading-7 text-gray-900">Addresses</h2>
-                <p className="mt-1 text-sm leading-6 text-gray-600">Choose from Existing addresses</p>
-                <ul>
+                <p className="mt-1 text-sm leading-6 text-gray-600 mb-4">Choose from existing addresses</p>
+                <ul className="space-y-4">
                   {user?.addresses?.map((address, index) => (
-                    <li key={index} className="flex justify-between gap-x-6 px-5 py-5 border-solid border-2 border-gray-200">
+                    <li key={index} className="flex justify-between gap-x-6 p-4 border rounded-lg border-gray-200 hover:shadow-lg transition-shadow duration-300">
                       <div className="flex gap-x-4">
                         <input
                           onChange={handleAddressSelection}
@@ -173,13 +168,11 @@ function Checkout() {
                         />
                         <div className="min-w-0 flex-auto">
                           <p className="text-sm font-semibold leading-6 text-gray-900">{address.name}</p>
-                          <p className="mt-1 truncate text-xs leading-5 text-gray-500">{address.street}</p>
-                          <p className="mt-1 truncate text-xs leading-5 text-gray-500">{address.pinCode}</p>
+                          <p className="mt-1 text-xs leading-5 text-gray-500">{address.street}, {address.city}, {address.state}, {address.pinCode}</p>
                         </div>
                       </div>
                       <div className="hidden sm:flex sm:flex-col sm:items-end">
                         <p className="text-sm leading-6 text-gray-900">Phone: {address.phone}</p>
-                        <p className="text-sm leading-6 text-gray-500">{address.city}</p>
                       </div>
                     </li>
                   ))}
@@ -215,43 +208,47 @@ function Checkout() {
 
             {/* Cart Summary */}
             <div className="lg:col-span-2">
-              <div className="mx-auto mt-12 bg-white max-w-7xl px-2 sm:px-2 lg:px-4">
-                <div className="border-t border-gray-200 px-0 py-6 sm:px-0">
-                  <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">Cart</h1>
-                  <div className="flow-root">
-                    <ul role="list" className="-my-6 divide-y divide-gray-200">
-                      {items?.map((item) => (
-                        <li key={item.id} className="flex py-5 justify-between gap-x-6">
-                          <div className="flex gap-x-4">
-                            <img src={item.product.images[0]} alt={item.product.name} className="h-20 w-20 rounded-md object-cover" />
-                            <div className="min-w-0 flex-auto">
-                              <p className="text-sm font-semibold leading-6 text-gray-900">{item.product.name}</p>
-                              <p className="mt-1 truncate text-xs leading-5 text-gray-500">Price: {item.product.discountPrice} INR</p>
-                              <div className="mt-1">
-                                <input
-                                  type="number"
-                                  min="1"
-                                  value={item.quantity}
-                                  onChange={(e) => handleQuantityChange(e, item)}
-                                  className="w-16 border rounded-md p-1"
-                                />
-                                <button onClick={(e) => handleRemoveItem(e, item.id)} className="text-red-500 ml-2">Remove</button>
-                              </div>
-                            </div>
+              <div className="mx-auto mt-12 bg-white shadow-md rounded-lg p-4">
+                <h1 className="text-4xl my-5 font-bold tracking-tight text-gray-900">Cart</h1>
+                <div className="flow-root">
+                  <ul role="list" className="-my-6 divide-y divide-gray-200">
+                    {items?.map((item) => (
+                      <li key={item.id} className="flex py-5 justify-between gap-x-6">
+                        <div className="flex gap-x-4">
+                          <img src={item.product.images[0]} alt={item.product.name} className="h-24 w-24 rounded-md object-cover" />
+                          <div className="min-w-0 flex-auto">
+                            <p className="text-sm font-semibold leading-6 text-gray-900">{item.product.name}</p>
+                            <p className="mt-1 text-xs leading-5 text-gray-500">Price: ${item.product.discountPrice}</p>
+                            <p className="mt-1 text-xs leading-5 text-gray-500">Quantity: 
+                              <input
+                                type="number"
+                                min="1"
+                                value={item.quantity}
+                                onChange={(e) => handleQuantityChange(e, item)}
+                                className="ml-2 w-12 text-center border rounded-md"
+                              />
+                            </p>
                           </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="flex justify-between mt-5 text-sm font-semibold leading-6 text-gray-900">
-                    <p>Total Items: {totalItems}</p>
-                    <p>Total Amount: {totalAmount} INR</p>
-                  </div>
+                        </div>
+                        <div className="hidden sm:flex sm:flex-col sm:items-end">
+                          <button
+                            onClick={(e) => handleRemoveItem(e, item.id)}
+                            className="text-sm font-semibold leading-6 text-red-600 hover:text-red-500"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <h2 className="text-xl font-bold">Total: ${totalAmount.toFixed(2)}</h2>
                   <button
                     onClick={handleOrderSubmission}
-                    className="mt-5 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Submit Order
+                    Place Order
                   </button>
                 </div>
               </div>

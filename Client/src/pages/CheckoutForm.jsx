@@ -59,7 +59,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Use HTTP for local development
-        return_url: `${import.meta.env.VITE_BACKEND_URI}/order-success/${currentOrder.id}`,
+        return_url: `https://click-shop-ecom.netlify.app/order-success/${currentOrder.id}`,
       },
     });
 
@@ -77,15 +77,22 @@ export default function CheckoutForm() {
   };
 
   return (
-    <form id="payment-form" onSubmit={handleSubmit}>
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button disabled={isLoading || !stripe || !elements} id="submit">
+    <form id="payment-form" onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg p-6 mt-8">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Payment Details</h2>
+      <PaymentElement id="payment-element" options={paymentElementOptions} className="mb-6" />
+      <button 
+        disabled={isLoading || !stripe || !elements} 
+        id="submit" 
+        className={`w-full py-3 rounded-md text-white font-semibold 
+          ${isLoading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2'}
+        `}
+      >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+          {isLoading ? <div className="spinner"></div> : "Pay now"}
         </span>
       </button>
       {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
+      {message && <div id="payment-message" className="mt-4 text-center text-sm text-red-600">{message}</div>}
     </form>
   );
 }

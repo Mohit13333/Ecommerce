@@ -55,229 +55,157 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-gray-50 min-h-screen">
       {status === 'loading' ? (
         <Grid
           height="80"
           width="80"
-          color="rgb(79, 70, 229)"
+          color="rgb(55, 65, 81)"
           ariaLabel="grid-loading"
           radius="12.5"
           visible={true}
         />
       ) : null}
       {product && Object.keys(product).length > 0 ? (
-        <div className="pt-6">
-          <nav aria-label="Breadcrumb">
-            <ol className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+        <div className="py-8">
+          <nav aria-label="Breadcrumb" className="bg-white p-4 shadow">
+            <ol className="flex items-center space-x-4">
               {product.breadcrumbs &&
                 product.breadcrumbs.map((breadcrumb) => (
-                  <li key={breadcrumb.id}>
-                    <div className="flex items-center">
-                      <a
-                        href={breadcrumb.href}
-                        className="mr-2 text-sm font-medium text-gray-900"
-                      >
-                        {breadcrumb.name}
-                      </a>
-                      <svg
-                        width={16}
-                        height={20}
-                        viewBox="0 0 16 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                        className="h-5 w-4 text-gray-300"
-                      >
-                        <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                      </svg>
-                    </div>
+                  <li key={breadcrumb.id} className="text-sm">
+                    <a
+                      href={breadcrumb.href}
+                      className="text-gray-700 hover:text-gray-900"
+                    >
+                      {breadcrumb.name}
+                    </a>
+                    <span className="mx-2 text-gray-400">/</span>
                   </li>
                 ))}
-              <li className="text-sm">
-                <a
-                  href={product.href}
-                  aria-current="page"
-                  className="font-medium text-gray-500 hover:text-gray-600"
-                >
-                  {product.title}
-                </a>
-              </li>
+              <li className="text-gray-500">{product.title}</li>
             </ol>
           </nav>
 
-          {/* Image gallery */}
-          <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
-            {product.images.map((image, index) => (
-              <div key={index} className={`aspect-h-${index === 0 ? '4' : '2'} aspect-w-${index === 0 ? '3' : '3'} overflow-hidden rounded-lg`}>
-                <img
-                  src={image}
-                  alt={product.title}
-                  className="h-full w-full object-cover object-center"
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Product info */}
-          <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-            <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                {product.title}
-              </h1>
-            </div>
-
-            {/* Options */}
-            <div className="mt-4 lg:row-span-3 lg:mt-0">
-              <h2 className="sr-only">Product information</h2>
-              <p className="text-xl line-through tracking-tight text-gray-900">
-                ${product.price}
-              </p>
-              <p className="text-3xl tracking-tight text-gray-900">
-                ${product.discountPrice}
-              </p>
-
-              {/* Reviews */}
-              <div className="mt-6">
-                <h3 className="sr-only">Reviews</h3>
-                <div className="flex items-center">
-                  <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        className={classNames(
-                          product.rating > rating ? 'text-gray-900' : 'text-gray-200',
-                          'h-5 w-5 flex-shrink-0'
-                        )}
-                        aria-hidden="true"
-                      />
-                    ))}
+          <div className="container mx-auto mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Image Gallery */}
+              <div className="flex overflow-x-auto p-2 space-x-4 scrollbar-hidden">
+                {product.images.map((image, index) => (
+                  <div
+                    key={index}
+                    className="flex-none w-64 h-64 shadow-lg rounded-lg overflow-hidden"
+                  >
+                    <img
+                      src={image}
+                      alt={product.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <p className="sr-only">{product.rating} out of 5 stars</p>
-                </div>
+                ))}
               </div>
 
-              <form className="mt-10" onSubmit={handleCart}>
-                {/* Colors */}
-                {product.colors && product.colors.length > 0 && (
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">Color</h3>
+              {/* Product Details */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h1 className="text-2xl font-semibold text-gray-900">
+                  {product.title}
+                </h1>
+                <p className="mt-2 text-gray-500">{product.description}</p>
+                <p className="mt-4 text-2xl text-gray-900">${product.discountPrice}</p>
+                <p className="text-gray-400 line-through">${product.price}</p>
 
-                    <RadioGroup
-                      value={selectedColor}
-                      onChange={setSelectedColor}
-                      className="mt-4"
-                    >
-                      <RadioGroup.Label className="sr-only">
-                        Choose a color
-                      </RadioGroup.Label>
-                      <div className="flex items-center space-x-3">
+                {/* Reviews */}
+                <div className="mt-4 flex items-center space-x-2">
+                  {[0, 1, 2, 3, 4].map((rating) => (
+                    <StarIcon
+                      key={rating}
+                      className={classNames(
+                        product.rating > rating ? 'text-yellow-500' : 'text-gray-300',
+                        'h-5 w-5'
+                      )}
+                      aria-hidden="true"
+                    />
+                  ))}
+                  <span className="text-gray-500">{product.rating} out of 5</span>
+                </div>
+
+                {/* Options */}
+                <form className="mt-6" onSubmit={handleCart}>
+                  {/* Colors */}
+                  {product.colors && product.colors.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-sm font-medium text-gray-700">Color</h3>
+                      <RadioGroup
+                        value={selectedColor}
+                        onChange={setSelectedColor}
+                        className="mt-2 flex space-x-4"
+                      >
                         {product.colors.map((color) => (
                           <RadioGroup.Option
                             key={color.id}
                             value={color}
-                            className={({ active, checked }) =>
+                            className={({ checked }) =>
                               classNames(
-                                color.selectedClass,
-                                active && checked ? 'ring ring-offset-1' : '',
-                                !active && checked ? 'ring-2' : '',
-                                'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none'
+                                checked ? 'ring-2 ring-indigo-500' : 'border border-gray-300',
+                                'flex items-center justify-center w-8 h-8 rounded-full cursor-pointer focus:outline-none'
                               )
                             }
                           >
-                            <RadioGroup.Label as="span" className="sr-only">
-                              {color.name}
-                            </RadioGroup.Label>
                             <span
                               aria-hidden="true"
                               className={classNames(
-                                color.class,
-                                'h-8 w-8 rounded-full border border-black border-opacity-10'
+                                color.class, // Ensure this class correctly applies the color
+                                'w-8 h-8 rounded-full'
                               )}
                             />
                           </RadioGroup.Option>
                         ))}
-                      </div>
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* Sizes */}
-                {product.sizes && product.sizes.length > 0 && (
-                  <div className="mt-10">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        Size
-                      </h3>
-                      <a
-                        href="#"
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
-                      >
-                        Size guide
-                      </a>
+                      </RadioGroup>
                     </div>
+                  )}
 
-                    <RadioGroup
-                      value={selectedSize}
-                      onChange={setSelectedSize}
-                      className="mt-4"
-                    >
-                      <RadioGroup.Label className="sr-only">
-                        Choose a size
-                      </RadioGroup.Label>
-                      <div className="grid grid-cols-4 gap-4">
+                  {/* Sizes */}
+                  {product.sizes && product.sizes.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-700">Size</h3>
+                      <RadioGroup
+                        value={selectedSize}
+                        onChange={setSelectedSize}
+                        className="mt-2 grid grid-cols-3 gap-3"
+                      >
                         {product.sizes.map((size) => (
                           <RadioGroup.Option
                             key={size.id}
                             value={size}
-                            className={({ active, checked }) =>
+                            className={({ checked }) =>
                               classNames(
-                                checked ? 'border-indigo-500' : 'border-transparent',
-                                'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none'
+                                checked
+                                  ? 'bg-indigo-600 text-white'
+                                  : 'bg-white text-gray-900',
+                                'py-2 px-4 rounded-md border text-center shadow-sm cursor-pointer focus:outline-none'
                               )
                             }
                           >
-                            {({ checked }) => (
-                              <>
-                                <span className="text-sm font-medium text-gray-900">
-                                  {size.name}
-                                </span>
-                                {checked && (
-                                  <span
-                                    className={classNames(
-                                      'pointer-events-none absolute -inset-px rounded-md border-2',
-                                      checked ? 'border-indigo-500' : 'border-transparent'
-                                    )}
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </>
-                            )}
+                            <span>{size.name}</span>
                           </RadioGroup.Option>
                         ))}
-                      </div>
-                    </RadioGroup>
-                  </div>
-                )}
+                      </RadioGroup>
+                    </div>
+                  )}
 
-                <button
-                  type="submit"
-                  className="mt-10 w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  Add to cart
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <div className="mt-10">
-            <h2 className="text-lg font-medium text-gray-900">Description</h2>
-            <div className="mt-4 space-y-4">
-              <p className="text-base text-gray-500">{product.description}</p>
+                  {/* Add to Cart Button */}
+                  <button
+                    type="submit"
+                    className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-md shadow-md hover:bg-indigo-700"
+                  >
+                    Add to cart
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="text-center text-gray-500 mt-6">No product found.</div>
+        <div className="text-center text-gray-500 mt-8">No product found.</div>
       )}
     </div>
   );

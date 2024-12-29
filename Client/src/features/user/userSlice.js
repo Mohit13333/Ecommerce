@@ -80,6 +80,7 @@ export const fetchLoggedInUserAsync = () => async (dispatch) => {
   dispatch(fetchLoggedInUserStart());
   try {
     const response = await fetchLoggedInUser();
+    console.log(response)
     dispatch(fetchLoggedInUserSuccess(response));
   } catch (error) {
     dispatch(fetchLoggedInUserFailure());

@@ -13,6 +13,7 @@ export const fetchUserById = async (req, res) => {
 
     res.status(200).json({
       id: user.id,
+      name:user.name,
       addresses: user.addresses,
       email: user.email,
       role: user.role,
