@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance with a base URL
 const api = axios.create({
-  baseURL: 'import.meta.env.VITE_BACKEND_URI', // Base URL for your API
+  baseURL: import.meta.env.VITE_BACKEND_URI, // Base URL for your API
 });
 
 // Function to add an item to the cart

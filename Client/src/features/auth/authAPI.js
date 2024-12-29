@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance with a base URL
 const apiClient = axios.create({
-  baseURL: 'import.meta.env.VITE_BACKEND_URI/auth',
+  baseURL: `${import.meta.env.VITE_BACKEND_URI}/auth`,
   headers: {
     'Content-Type': 'application/json',
   },

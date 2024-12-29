@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Set up the Axios instance with a base URL
 const api = axios.create({
-  baseURL: 'import.meta.env.VITE_BACKEND_URI',
+  baseURL: import.meta.env.VITE_BACKEND_URI,
 });
 
 // Function to get the authorization token from local storage
