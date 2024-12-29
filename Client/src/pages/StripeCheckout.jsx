@@ -21,7 +21,7 @@ export default function StripeCheckout() {
 
       try {
         const token = localStorage.getItem("token"); // Get token from local storage
-        const response = await axios.post("http://localhost:8080/create-payment-intent", {
+        const response = await axios.post("import.meta.env.VITE_BACKEND_URI/create-payment-intent", {
           totalAmount: currentOrder.totalAmount,
           orderId: currentOrder.id,
         }, {

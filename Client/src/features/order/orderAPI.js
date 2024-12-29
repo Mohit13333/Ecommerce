@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with a base URL
 const api = axios.create({
-  baseURL: "http://localhost:8080", // Base URL for your API
+  baseURL: "import.meta.env.VITE_BACKEND_URI", // Base URL for your API
 });
 
 export const createOrder = async (order) => {
