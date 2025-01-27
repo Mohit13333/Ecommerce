@@ -22,11 +22,13 @@ server.use(
 server.use(
   cors({
     exposedHeaders: ["X-Total-Count"],
-    origin: "https://click-shop-ecom.netlify.app",
+    // origin: "https://click-shop-ecom.netlify.app",
+    origin: "http://localhost:5174",
     credentials: true,
   })
 );
 server.use(express.json());
+server.use(express.urlencoded({extended: true, limit: "16kb"}))
 setRoutes(server);
 
 connectDB()
