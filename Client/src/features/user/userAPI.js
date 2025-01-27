@@ -20,7 +20,6 @@ export const fetchLoggedInUserOrders = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching user orders:", error);
     throw error.response ? error.response.data : { message: "Network Error" };
   }
 };
@@ -33,11 +32,8 @@ export const fetchLoggedInUser = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching user info:", error);
     if (error.response?.status === 401) {
       localStorage.removeItem('token')
-      console.warn("Token expired or invalid. Redirecting to login...");
-      Navigate = "/login";
     }
     throw error.response ? error.response.data : { message: "Network Error" };
   }
