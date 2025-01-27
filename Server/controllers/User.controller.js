@@ -2,7 +2,6 @@ import { User } from '../model/User.js';
 
 export const fetchUserById = async (req, res) => {
   const { id } = req.user; // Ensure req.user is populated
-  console.log(id);
   
   try {
     const user = await User.findById(id);

@@ -6,7 +6,6 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   role: { type: String, required: true, default: 'user' },
   addresses: { type: [Schema.Types.Mixed] }, 
-  // For addresses, we can make a separate Schema like orders. But in this case we are fine
   name: { type: String },
   resetPasswordToken: { type: String, default: '' }
 }, { timestamps: true });

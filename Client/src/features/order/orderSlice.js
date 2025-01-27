@@ -35,12 +35,10 @@ const orderSlice = createSlice({
   },
 });
 
-// Thunk actions
 export const createOrderAsync = (order) => async (dispatch) => {
   dispatch(orderSlice.actions.setStatus('loading'));
   try {
     const response = await createOrder(order);
-    console.log(response)
     dispatch(orderSlice.actions.addOrder(response.data));
     dispatch(orderSlice.actions.setStatus('idle'));
   } catch (error) {
@@ -75,7 +73,6 @@ export const fetchAllOrdersAsync = ({ sort, pagination }) => async (dispatch) =>
 
 export const { resetOrder } = orderSlice.actions;
 
-// Selectors
 export const selectCurrentOrder = (state) => state.order.currentOrder;
 export const selectOrders = (state) => state.order.orders;
 export const selectTotalOrders = (state) => state.order.totalOrders;

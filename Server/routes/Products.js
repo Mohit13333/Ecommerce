@@ -1,4 +1,5 @@
 import express from "express";
+import { upload } from "../middlewares/multer.middleware.js";
 import {
   createProduct,
   fetchAllProducts,
@@ -8,8 +9,8 @@ import {
 
 const router = express.Router();
 router
-  .post("/", createProduct)
+  .post("/", upload, createProduct)
   .get("/", fetchAllProducts)
   .get("/:id", fetchProductById)
-  .patch("/:id", updateProduct);
+  .patch("/:id", upload, updateProduct);
 export { router };

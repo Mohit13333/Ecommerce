@@ -61,15 +61,13 @@ export const productSlice = createSlice({
   },
 });
 
-// Async actions defined as regular functions that return promises
 export const fetchProducts = (filter, sort, pagination, admin) => {
   return async (dispatch) => {
     dispatch(productSlice.actions.setLoading());
     try {
       const response = await fetchProductsByFilters(filter, sort, pagination, admin);
-      console.log('API response:', response); // Check the response structure
       dispatch(productSlice.actions.setProducts({
-        products: response.products, // Adjust based on your API response structure
+        products: response.products,
         totalItems: response.totalItems
       }));
     } catch (error) {
@@ -83,7 +81,7 @@ export const fetchProductBrands = () => {
     dispatch(productSlice.actions.setLoading());
     try {
       const response = await fetchBrands();
-      dispatch(productSlice.actions.setBrands(response.data));
+      dispatch(productSlice.actions.setBrands(response));
     } catch (error) {
       console.error('Failed to fetch brands:', error);
     }
@@ -95,7 +93,7 @@ export const fetchProductCategories = () => {
     dispatch(productSlice.actions.setLoading());
     try {
       const response = await fetchCategories();
-      dispatch(productSlice.actions.setCategories(response.data));
+      dispatch(productSlice.actions.setCategories(response));
     } catch (error) {
       console.error('Failed to fetch categories:', error);
     }
@@ -107,7 +105,6 @@ export const fetchProductByIdAction = (id) => {
     dispatch(productSlice.actions.setLoading());
     try {
       const response = await fetchProductById(id);
-      console.log(response)
       dispatch(productSlice.actions.setSelectedProduct(response));
     } catch (error) {
       console.error('Failed to fetch product:', error);
@@ -141,7 +138,6 @@ export const updateProductAction = (update) => {
 
 export const { clearSelectedProduct } = productSlice.actions;
 
-// Selectors
 export const selectAllProducts = (state) => state.product.products;
 export const selectBrands = (state) => state.product.brands;
 export const selectCategories = (state) => state.product.categories;

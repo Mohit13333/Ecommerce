@@ -5,7 +5,6 @@ import { router as usersRouter } from "./Users.js";
 import { router as authRouter } from "./Auth.js";
 import { router as cartRouter } from "./Cart.js";
 import { router as ordersRouter } from "./Order.js";
-import {router as webhookRouter} from "./webhook.js"
 import {router as paymentRouter} from "./payment.js"
 import { checkAuthentication } from "../middlewares/checkAuth.middlware.js";
 
@@ -17,6 +16,5 @@ export const setRoutes = (server) => {
   server.use("/auth", authRouter);
   server.use("/cart", checkAuthentication, cartRouter);
   server.use("/orders", checkAuthentication, ordersRouter);
-  server.use("/", checkAuthentication, webhookRouter);
-  server.use("/", checkAuthentication, paymentRouter);
+  server.use("/", paymentRouter);
 };

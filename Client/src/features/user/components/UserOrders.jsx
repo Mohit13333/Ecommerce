@@ -37,26 +37,26 @@ export default function UserOrders() {
       {orderList.length > 0 ? (
         orderList.map((order) => (
           <div
-            key={order.id}
+            key={order?.id}
             className="mx-auto my-10 bg-white shadow-md rounded-lg overflow-hidden border border-gray-200"
           >
             <div className="border-b border-gray-200 px-6 py-4">
               <h1 className="text-3xl font-bold text-gray-900">
-                Order # {order.id}
+                Order # {order?.id}
               </h1>
               <h3 className="text-lg font-semibold text-red-600 mt-2">
-                Order Status: {order.status}
+                Order Status: {order?.status}
               </h3>
             </div>
             <div className="px-6 py-4">
               <h4 className="text-xl font-semibold text-gray-800 mb-4">Items:</h4>
               <ul className="divide-y divide-gray-200">
                 {order.items.map((item) => (
-                  <li key={item._id} className="flex py-4">
+                  <li key={item?._id} className="flex py-4">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                       <img
-                        src={item.productId.thumbnail}
-                        alt={item.productId.title}
+                        src={item?.productId?.thumbnail}
+                        alt={item?.productId?.title}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
@@ -64,17 +64,17 @@ export default function UserOrders() {
                       <div>
                         <div className="flex justify-between text-lg font-medium text-gray-900">
                           <h3>
-                            <Link to={`/product-detail/${item.productId.id}`} className="hover:text-blue-600">
-                              {item.productId.title}
+                            <Link to={`/product-detail/${item?.productId?.id}`} className="hover:text-blue-600">
+                              {item?.productId?.title}
                             </Link>
                           </h3>
-                          <p className="ml-4 text-lg font-semibold">${item.productId.discountPrice}</p>
+                          <p className="ml-4 text-lg font-semibold">${item?.productId?.discountPrice}</p>
                         </div>
-                        <p className="mt-1 text-sm text-gray-500">{item.productId.brand}</p>
+                        <p className="mt-1 text-sm text-gray-500">{item?.productId?.brand}</p>
                       </div>
                       <div className="flex flex-1 items-end justify-between text-sm mt-2">
                         <div className="text-gray-500">
-                          <span className="font-medium">Qty: {item.quantity}</span>
+                          <span className="font-medium">Qty: {item?.quantity}</span>
                         </div>
                       </div>
                     </div>

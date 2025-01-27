@@ -25,7 +25,6 @@ export const userSlice = createSlice({
     },
     fetchLoggedInUserOrdersFailure(state) {
       state.status = 'idle';
-      // Handle error if needed
     },
     fetchLoggedInUserStart(state) {
       state.status = 'loading';
@@ -36,7 +35,6 @@ export const userSlice = createSlice({
     },
     fetchLoggedInUserFailure(state) {
       state.status = 'idle';
-      // Handle error if needed
     },
     updateUserStart(state) {
       state.status = 'loading';
@@ -47,12 +45,10 @@ export const userSlice = createSlice({
     },
     updateUserFailure(state) {
       state.status = 'idle';
-      // Handle error if needed
     },
   },
 });
 
-// Action creators
 export const {
   fetchLoggedInUserOrdersStart,
   fetchLoggedInUserOrdersSuccess,
@@ -65,7 +61,6 @@ export const {
   updateUserFailure,
 } = userSlice.actions;
 
-// Thunks (Now you need to create thunks manually)
 export const fetchLoggedInUserOrdersAsync = () => async (dispatch) => {
   dispatch(fetchLoggedInUserOrdersStart());
   try {
@@ -80,7 +75,6 @@ export const fetchLoggedInUserAsync = () => async (dispatch) => {
   dispatch(fetchLoggedInUserStart());
   try {
     const response = await fetchLoggedInUser();
-    console.log(response)
     dispatch(fetchLoggedInUserSuccess(response));
   } catch (error) {
     dispatch(fetchLoggedInUserFailure());

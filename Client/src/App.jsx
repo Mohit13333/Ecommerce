@@ -1,39 +1,39 @@
-import './App.css';
-import Home from './pages/Home';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import CartPage from './pages/CartPage';
-import Checkout from './pages/Checkout';
-import ProductDetailPage from './pages/ProductDetailPage';
-import Protected from './features/auth/components/Protected';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import "./App.css";
+import Home from "./pages/Home";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import CartPage from "./pages/CartPage";
+import Checkout from "./pages/Checkout";
+import ProductDetailPage from "./pages/ProductDetailPage";
+import Protected from "./features/auth/components/Protected";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   checkAuthAction,
   selectLoggedInUser,
   selectUserChecked,
   setLoggedInUser,
-} from './features/auth/authSlice';
-import { fetchItemsByUserIdAsync } from './features/cart/cartSlice';
-import PageNotFound from './pages/404';
-import OrderSuccessPage from './pages/OrderSuccessPage';
-import UserOrdersPage from './pages/UserOrdersPage';
-import UserProfilePage from './pages/UserProfilePage';
-import { fetchLoggedInUserAsync } from './features/user/userSlice';
-import Logout from './features/auth/components/Logout';
-import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import ProtectedAdmin from './features/auth/components/ProtectedAdmin';
-import AdminHome from './pages/AdminHome';
-import AdminProductDetailPage from './pages/AdminProductDetailPage';
-import AdminProductFormPage from './pages/AdminProductFormPage';
-import AdminOrdersPage from './pages/AdminOrdersPage';
-import StripeCheckout from './pages/StripeCheckout';
-import ResetPasswordPage from './pages/ResetPasswordPage';
+} from "./features/auth/authSlice";
+import { fetchItemsByUserIdAsync } from "./features/cart/cartSlice";
+import PageNotFound from "./pages/404";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
+import UserOrdersPage from "./pages/UserOrdersPage";
+import UserProfilePage from "./pages/UserProfilePage";
+import { fetchLoggedInUserAsync } from "./features/user/userSlice";
+import Logout from "./features/auth/components/Logout";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ProtectedAdmin from "./features/auth/components/ProtectedAdmin";
+import AdminHome from "./pages/AdminHome";
+import AdminProductDetailPage from "./pages/AdminProductDetailPage";
+import AdminProductFormPage from "./pages/AdminProductFormPage";
+import AdminOrdersPage from "./pages/AdminOrdersPage";
+import StripeCheckout from "./pages/StripeCheckout";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: (
       <Protected>
         <Home />
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/admin',
+    path: "/admin",
     element: (
       <ProtectedAdmin>
         <AdminHome />
@@ -49,15 +49,15 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/login',
+    path: "/login",
     element: <LoginPage />,
   },
   {
-    path: '/signup',
+    path: "/signup",
     element: <SignupPage />,
   },
   {
-    path: '/cart',
+    path: "/cart",
     element: (
       <Protected>
         <CartPage />
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/checkout',
+    path: "/checkout",
     element: (
       <Protected>
         <Checkout />
@@ -73,7 +73,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/product-detail/:id',
+    path: "/product-detail/:id",
     element: (
       <Protected>
         <ProductDetailPage />
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/admin/product-detail/:id',
+    path: "/admin/product-detail/:id",
     element: (
       <ProtectedAdmin>
         <AdminProductDetailPage />
@@ -89,7 +89,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/admin/product-form',
+    path: "/admin/product-form",
     element: (
       <ProtectedAdmin>
         <AdminProductFormPage />
@@ -97,7 +97,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/admin/orders',
+    path: "/admin/orders",
     element: (
       <ProtectedAdmin>
         <AdminOrdersPage />
@@ -105,7 +105,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/admin/product-form/edit/:id',
+    path: "/admin/product-form/edit/:id",
     element: (
       <ProtectedAdmin>
         <AdminProductFormPage />
@@ -113,7 +113,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/order-success/:id',
+    path: "/order-success/:id",
     element: (
       <Protected>
         <OrderSuccessPage />
@@ -121,7 +121,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/my-orders',
+    path: "/my-orders",
     element: (
       <Protected>
         <UserOrdersPage />
@@ -129,7 +129,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/profile',
+    path: "/profile",
     element: (
       <Protected>
         <UserProfilePage />
@@ -137,7 +137,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/stripe-checkout/',
+    path: "/stripe-checkout/",
     element: (
       <Protected>
         <StripeCheckout />
@@ -145,19 +145,19 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/logout',
+    path: "/logout",
     element: <Logout />,
   },
   {
-    path: '/forgot-password',
+    path: "/forgot-password",
     element: <ForgotPasswordPage />,
   },
   {
-    path: '/reset-password',
+    path: "/reset-password",
     element: <ResetPasswordPage />,
   },
   {
-    path: '*',
+    path: "*",
     element: <PageNotFound />,
   },
 ]);
@@ -166,16 +166,15 @@ function App() {
   const dispatch = useDispatch();
   const user = useSelector(selectLoggedInUser);
   const userChecked = useSelector(selectUserChecked);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    console.log("Loaded token from localStorage:", token); // Debugging line
     if (token) {
-      dispatch(setLoggedInUser(token)); // Load token into Redux
+      dispatch(setLoggedInUser(token));
     }
-    dispatch(checkAuthAction()); // Check authentication status
-    setIsLoading(false); // Stop loading after checking auth
+    dispatch(checkAuthAction());
+    setIsLoading(false);
   }, [dispatch]);
 
   useEffect(() => {
@@ -186,7 +185,7 @@ function App() {
   }, [dispatch, user]);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show a loading message or spinner
+    return <div>Loading...</div>;
   }
 
   return (

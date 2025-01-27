@@ -1,16 +1,55 @@
+import uploadOnCloudinary from '../config/cloudinary.js';
 import { Product } from '../model/Product.js';
 
 export const createProduct = async (req, res) => {
-  const product = new Product(req.body);
-  product.discountPrice = Math.round(product.price * (1 - product.discountPercentage / 100));
+  // Check if thumbnail and images are provided
+  if (!req.files || !req.files.thumbnail || req.files.thumbnail.length === 0 || !req.files.images || req.files.images.length === 0) {
+    return res.status(400).json({ message: "Thumbnail and images are required." });
+  }
+
+  // Check for required fields in the request body
+  const { title, category, brand, price, discountPercentage } = req.body;
+  if (!title || !category || !brand || price === undefined) {
+    return res.status(400).json({ message: "Title, category, brand, and price are required." });
+  }
 
   try {
-    const doc = await product.save();
+    const thumbnailFile = req.files.thumbnail[0];
+    const thumbnailResponse = await uploadOnCloudinary(thumbnailFile.path);
+
+    // Upload images
+    const imageResponses = await Promise.all(
+      req.files.images.map(async (image) => {
+        const response = await uploadOnCloudinary(image.path);
+        return response.url; // Return only the URL
+      })
+    );
+
+    // Calculate discount price, ensure valid input
+    const discountPrice = price && discountPercentage ? Math.round(price * (1 - discountPercentage / 100)) : null;
+
+    // Create product object
+    const product = {
+      title,
+      description: req.body.description,
+      price,
+      discountPrice,
+      category,
+      brand,
+      thumbnail: thumbnailResponse.url,
+      images: imageResponses,
+    };
+
+    const productData = new Product(product);
+    const doc = await productData.save();
     res.status(201).json(doc);
   } catch (err) {
-    res.status(400).json(err);
+    console.error("Error creating product:", err);
+    res.status(500).json({ message: "Internal server error", error: err.message });
   }
 };
+
+
 
 export const fetchAllProducts = async (req, res) => {
   let condition = {};
@@ -34,7 +73,6 @@ export const fetchAllProducts = async (req, res) => {
   }
 
   const totalDocs = await totalProductsQuery.countDocuments().exec();
-  console.log({ totalDocs });
 
   if (req.query._page && req.query._limit) {
     const pageSize = Number(req.query._limit);

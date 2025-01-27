@@ -41,7 +41,6 @@ export default function UserProfile() {
     setValue('phone', address.phone);
     setValue('street', address.street);
   };
-// console.log(userInfo.data)
   const handleAdd = (address) => {
     const newUser = { ...userInfo, addresses: [...userInfo.addresses, address] };
     dispatch(updateUserAsync(newUser));
@@ -81,7 +80,6 @@ export default function UserProfile() {
               className="bg-white px-5 py-12 mt-12"
               noValidate
               onSubmit={handleSubmit((data) => {
-                console.log(data);
                 handleAdd(data);
                 reset();
               })}
@@ -277,7 +275,6 @@ export default function UserProfile() {
                   className="bg-white px-5 py-12 mt-12"
                   noValidate
                   onSubmit={handleSubmit((data) => {
-                    console.log(data);
                     handleEdit(data, index);
                     reset();
                   })}

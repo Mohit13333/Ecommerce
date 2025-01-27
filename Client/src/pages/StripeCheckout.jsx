@@ -1,38 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { useSelector } from 'react-redux';
-import axios from "axios"; // Import axios
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 import CheckoutForm from "./CheckoutForm";
-// import "../Stripe.css";
 import { selectCurrentOrder } from "../features/order/orderSlice";
 
-// Move loadStripe into an async function to avoid direct await usage
-const stripePromise = loadStripe("pk_test_51QbFP9LgxkTIPBkHjVJ60y2ubZXwvwk53Ly84PbnAmBxN2jVUHUMn57YObXUaWSuBeT95Dk987R9q3OiYfpSoxze00864RMa0y");
+const stripePromise = loadStripe(
+  "pk_test_51QbFP9LgxkTIPBkHjVJ60y2ubZXwvwk53Ly84PbnAmBxN2jVUHUMn57YObXUaWSuBeT95Dk987R9q3OiYfpSoxze00864RMa0y"
+);
 
 export default function StripeCheckout() {
   const [clientSecret, setClientSecret] = useState("");
+  const [error, setError] = useState("");
   const currentOrder = useSelector(selectCurrentOrder);
 
   useEffect(() => {
     const createPaymentIntent = async () => {
-      if (!currentOrder) return; // Ensure currentOrder is defined
+      if (!currentOrder || !currentOrder.totalAmount || !currentOrder.id) {
+        setError("Invalid order details. Cannot create payment intent.");
+        return;
+      }
 
       try {
-        const token = localStorage.getItem("token"); // Get token from local storage
-        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URI}/create-payment-intent`, {
-          totalAmount: currentOrder.totalAmount,
-          orderId: currentOrder.id,
-        }, {
-          headers: {
-            Authorization: `Bearer ${token}`, // Add token to headers
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URI}/create-payment-intent`,
+          {
+            totalAmount: currentOrder.totalAmount,
+            orderId: currentOrder.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
+        );
 
         setClientSecret(response.data.clientSecret);
-      } catch (error) {
-        console.error("Error creating payment intent:", error);
+      } catch (err) {
+        console.error("Error creating payment intent:", err);
+        setError("Failed to create payment intent. Please try again.");
       }
     };
 
@@ -40,7 +49,7 @@ export default function StripeCheckout() {
   }, [currentOrder]);
 
   const appearance = {
-    theme: 'stripe',
+    theme: "stripe",
   };
   const options = {
     clientSecret,
@@ -49,10 +58,13 @@ export default function StripeCheckout() {
 
   return (
     <div className="Stripe">
-      {clientSecret && (
+      {error && <p className="error-message">{error}</p>}
+      {clientSecret ? (
         <Elements options={options} stripe={stripePromise}>
           <CheckoutForm />
         </Elements>
+      ) : (
+        !error && <p>Loading payment information...</p>
       )}
     </div>
   );

@@ -43,7 +43,7 @@ export default function AdminProductDetail() {
   };
 
   useEffect(() => {
-    dispatch(fetchProductByIdAction(params.id)); // Use the correct action here
+    dispatch(fetchProductByIdAction(params.id));
   }, [dispatch, params.id]);
 
   return (
@@ -98,8 +98,6 @@ export default function AdminProductDetail() {
               </li>
             </ol>
           </nav>
-
-          {/* Image gallery */}
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
             <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
               <img
@@ -132,26 +130,20 @@ export default function AdminProductDetail() {
               />
             </div>
           </div>
-
-          {/* Product info */}
           <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                 {product.title}
               </h1>
             </div>
-
-            {/* Options */}
             <div className="mt-4 lg:row-span-3 lg:mt-0">
               <h2 className="sr-only">Product information</h2>
               <p className="text-xl line-through tracking-tight text-gray-900">
-                ${product.price}
+                ₹{product.price}
               </p>
               <p className="text-3xl tracking-tight text-gray-900">
-                ${product.discountPrice}
+                ₹{product.discountPrice}
               </p>
-
-              {/* Reviews */}
               <div className="mt-6">
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
@@ -174,7 +166,6 @@ export default function AdminProductDetail() {
               </div>
 
               <form className="mt-10">
-                {/* Colors */}
                 {product.colors && product.colors.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-900">Color</h3>
@@ -217,8 +208,6 @@ export default function AdminProductDetail() {
                     </RadioGroup>
                   </div>
                 )}
-
-                {/* Sizes */}
                 {product.sizes && product.sizes.length > 0 && (
                   <div className="mt-10">
                     <div className="flex items-center justify-between">

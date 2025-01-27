@@ -27,6 +27,7 @@ function ProductForm() {
   const params = useParams();
   const selectedProduct = useSelector(selectProductById);
   const [openModal, setOpenModal] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
 
   const colors = [
     {
@@ -91,17 +92,6 @@ function ProductForm() {
     },
   ];
 
-  const productBrands = [
-    {
-      name: "macho",
-    },
-  ];
-  const productCategories = [
-    {
-      name: "macho",
-    },
-  ];
-
   const sizes = [
     { name: "XXS", inStock: true, id: "xxs" },
     { name: "XS", inStock: true, id: "xs" },
@@ -127,13 +117,7 @@ function ProductForm() {
       setValue("description", selectedProduct.description);
       setValue("price", selectedProduct.price);
       setValue("discountPercentage", selectedProduct.discountPercentage);
-      setValue("thumbnail", selectedProduct.thumbnail);
       setValue("stock", selectedProduct.stock);
-      setValue("image1", selectedProduct.images[0]);
-      setValue("image2", selectedProduct.images[1]);
-      setValue("image3", selectedProduct.images[2]);
-      setValue("brand", selectedProduct.brand);
-      setValue("category", selectedProduct.category);
       setValue("highlight1", selectedProduct.highlights[0]);
       setValue("highlight2", selectedProduct.highlights[1]);
       setValue("highlight3", selectedProduct.highlights[2]);
@@ -146,6 +130,16 @@ function ProductForm() {
         "colors",
         selectedProduct.colors.map((color) => color.id)
       );
+      setImages(selectedProduct.images);
+      setThumbnail(selectedProduct.thumbnail);
+      setValue(
+        "brands",
+        selectedProduct.brands.map((brand) => brand.id)
+      );
+      setValue(
+        "categories",
+        selectedProduct.categories.map((category) => category.id)
+      );
     }
   }, [selectedProduct, params.id, setValue]);
 
@@ -155,19 +149,30 @@ function ProductForm() {
     dispatch(updateProductAction(product));
   };
 
+  const handleImageChange = (e, index) => {
+    const file = e.target.files;
+    if (file) {
+      const newImages = [...images];
+      newImages[index] = file;
+      setImages(newImages);
+    }
+  };
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setThumbnail(file);
+    }
+  };
+
   return (
     <>
       <form
         noValidate
         onSubmit={handleSubmit((data) => {
-          console.log(data);
           const product = { ...data };
-          product.images = [
-            product.image1,
-            product.image2,
-            product.image3,
-            product.thumbnail,
-          ];
+          product.images = images;
+          product.thumbnail = thumbnail;
           product.highlights = [
             product.highlight1,
             product.highlight2,
@@ -185,14 +190,21 @@ function ProductForm() {
               sizes.find((sz) => sz.id === size)
             );
           }
+          if (product.brands) {
+            product.brands = product.brands.map((brandId) =>
+              brands.find((brand) => brand.id === brandId)
+            );
+          }
+          if (product.categories) {
+            product.categories = product.categories.map((categoryId) =>
+              categories.find((category) => category.id === categoryId)
+            );
+          }
 
-          delete product["image1"];
-          delete product["image2"];
-          delete product["image3"];
           product.price = +product.price;
           product.stock = +product.stock;
           product.discountPercentage = +product.discountPercentage;
-          console.log(product);
+
           if (params.id) {
             product.id = params.id;
             product.rating = selectedProduct.rating || 0;
@@ -225,17 +237,13 @@ function ProductForm() {
                   Product Name
                 </label>
                 <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                    <input
-                      type="text"
-                      {...register("title", {
-                        required: "name is required",
-                      })}
-                      id="title"
-                      className="block flex-1 border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Enter product name"
-                    />
-                  </div>
+                  <input
+                    type="text"
+                    {...register("title", { required: "Name is required" })}
+                    id="title"
+                    className="block flex-1 border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Enter product name"
+                  />
                 </div>
               </div>
 
@@ -250,7 +258,7 @@ function ProductForm() {
                   <textarea
                     id="description"
                     {...register("description", {
-                      required: "description is required",
+                      required: "Description is required",
                     })}
                     rows={3}
                     className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -264,25 +272,47 @@ function ProductForm() {
 
               <div className="col-span-full">
                 <label
-                  htmlFor="brand"
+                  htmlFor="brands"
                   className="block text-sm font-medium leading-6 text-gray-800"
                 >
-                  Brand
+                  Brands
                 </label>
-                <div className="mt-2">
-                  <select
-                    {...register("brand", {
-                      required: "brand is required",
-                    })}
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 focus:ring-2 focus:ring-indigo-600"
-                  >
-                    <option value="">--choose brand--</option>
-                    {productBrands?.map((brand) => (
-                      <option key={brand.value} value={brand.value}>
-                        {brand.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="mt-2 flex flex-col gap-2">
+                  {brands?.map((brand) => (
+                    <label key={brand.id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        {...register("brands")}
+                        value={brand.id}
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <span className="ml-2 text-gray-700">{brand.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="col-span-full">
+                <label
+                  htmlFor="categories"
+                  className="block text-sm font-medium leading-6 text-gray-800"
+                >
+                  Categories
+                </label>
+                <div className="mt-2 flex flex-col gap-2">
+                  {categories?.map((category) => (
+                    <label key={category.id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        {...register("categories")}
+                        value={category.id}
+                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                      />
+                      <span className="ml-2 text-gray-700">
+                        {category.name}
+                      </span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -298,10 +328,13 @@ function ProductForm() {
                     <label key={color.id} className="flex items-center">
                       <input
                         type="checkbox"
-                        {...register("colors", {})}
+                        {...register("colors")}
                         value={color.id}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                       />
+                      <span
+                        className={`ml-2 rounded-full h-4 w-4 ${color.class} ring-1 ${color.selectedClass} ring-opacity-50`}
+                      ></span>
                       <span className="ml-2 text-gray-700">{color.name}</span>
                     </label>
                   ))}
@@ -320,7 +353,7 @@ function ProductForm() {
                     <label key={size.id} className="flex items-center">
                       <input
                         type="checkbox"
-                        {...register("sizes", {})}
+                        {...register("sizes")}
                         value={size.id}
                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                       />
@@ -330,31 +363,7 @@ function ProductForm() {
                 </div>
               </div>
 
-              <div className="col-span-full">
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Category
-                </label>
-                <div className="mt-2">
-                  <select
-                    {...register("category", {
-                      required: "category is required",
-                    })}
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 focus:ring-2 focus:ring-indigo-600"
-                  >
-                    <option value="">--choose category--</option>
-                    {productCategories?.map((category) => (
-                      <option key={category.value} value={category.value}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
+              <div className="sm:col-span-6">
                 <label
                   htmlFor="price"
                   className="block text-sm font-medium leading-6 text-gray-800"
@@ -362,125 +371,20 @@ function ProductForm() {
                   Price
                 </label>
                 <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                    <input
-                      type="number"
-                      {...register("price", {
-                        required: "price is required",
-                        min: 1,
-                        max: 10000,
-                      })}
-                      id="price"
-                      className="block flex-1 border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Enter price"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="discountPercentage"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Discount Percentage
-                </label>
-                <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                    <input
-                      type="number"
-                      {...register("discountPercentage", {
-                        required: "discountPercentage is required",
-                        min: 0,
-                        max: 100,
-                      })}
-                      id="discountPercentage"
-                      className="block flex-1 border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Enter discount percentage"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="stock"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Stock
-                </label>
-                <div className="mt-2">
-                  <div className="flex rounded-md shadow-sm ring-1 ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-                    <input
-                      type="number"
-                      {...register("stock", {
-                        required: "stock is required",
-                        min: 1,
-                        max: 1000,
-                      })}
-                      id="stock"
-                      className="block flex-1 border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                      placeholder="Enter stock quantity"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <label
-                  htmlFor="image1"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Image 1
-                </label>
-                <div className="mt-2">
                   <input
-                    type="text"
-                    {...register("image1")}
-                    id="image1"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter image URL"
+                    type="number"
+                    {...register("price", {
+                      required: "Price is required",
+                      min: 0,
+                    })}
+                    id="price"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Enter product price"
                   />
                 </div>
               </div>
 
-              <div className="col-span-full">
-                <label
-                  htmlFor="image2"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Image 2
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    {...register("image2")}
-                    id="image2"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter image URL"
-                  />
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <label
-                  htmlFor="image3"
-                  className="block text-sm font-medium leading-6 text-gray-800"
-                >
-                  Image 3
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    {...register("image3")}
-                    id="image3"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter image URL"
-                  />
-                </div>
-              </div>
-
-              <div className="col-span-full">
+              <div className="sm:col-span-6">
                 <label
                   htmlFor="thumbnail"
                   className="block text-sm font-medium leading-6 text-gray-800"
@@ -489,11 +393,67 @@ function ProductForm() {
                 </label>
                 <div className="mt-2">
                   <input
-                    type="text"
+                    type="file"
                     {...register("thumbnail")}
                     id="thumbnail"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter thumbnail URL"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="images"
+                  className="block text-sm font-medium leading-6 text-gray-800"
+                >
+                  Image
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="file"
+                    {...register("images")}
+                    multiple
+                    id="images"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="discountPercentage"
+                  className="block text-sm font-medium leading-6 text-gray-800"
+                >
+                  Discount Percentage
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="number"
+                    {...register("discountPercentage")}
+                    id="discountPercentage"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Enter discount percentage"
+                  />
+                </div>
+              </div>
+
+              <div className="sm:col-span-6">
+                <label
+                  htmlFor="stock"
+                  className="block text-sm font-medium leading-6 text-gray-800"
+                >
+                  Stock
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="number"
+                    {...register("stock", {
+                      required: "Stock is required",
+                      min: 0,
+                    })}
+                    id="stock"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Enter available stock"
                   />
                 </div>
               </div>
@@ -510,8 +470,8 @@ function ProductForm() {
                     type="text"
                     {...register("highlight1")}
                     id="highlight1"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter highlight"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Highlight 1"
                   />
                 </div>
               </div>
@@ -528,8 +488,8 @@ function ProductForm() {
                     type="text"
                     {...register("highlight2")}
                     id="highlight2"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter highlight"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Highlight 2"
                   />
                 </div>
               </div>
@@ -546,8 +506,8 @@ function ProductForm() {
                     type="text"
                     {...register("highlight3")}
                     id="highlight3"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter highlight"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Highlight 3"
                   />
                 </div>
               </div>
@@ -564,26 +524,45 @@ function ProductForm() {
                     type="text"
                     {...register("highlight4")}
                     id="highlight4"
-                    className="block w-full rounded-md border-0 py-2 px-3 text-gray-800 shadow-sm ring-1 ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600"
-                    placeholder="Enter highlight"
+                    className="block w-full border-0 bg-transparent py-2 pl-3 pr-3 text-gray-800 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    placeholder="Highlight 4"
                   />
-                </div>
-              </div>
-
-              <div className="col-span-full">
-                <div className="flex justify-end mt-6">
-                  <button
-                    type="submit"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    {params.id ? "Update Product" : "Create Product"}
-                  </button>
                 </div>
               </div>
             </div>
           </div>
+
+          <div className="flex justify-between">
+            {params.id && (
+              <button
+                type="button"
+                className="inline-flex justify-center rounded-md border border-red-600 bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700"
+                onClick={() => setOpenModal(true)}
+              >
+                Delete Product
+              </button>
+            )}
+            <div>
+              <button
+                type="submit"
+                className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700"
+              >
+                {params.id ? "Update Product" : "Create Product"}
+              </button>
+            </div>
+          </div>
         </div>
       </form>
+
+      {openModal && (
+        <Modal
+          title="Confirm Delete"
+          onClose={() => setOpenModal(null)}
+          onConfirm={handleDelete}
+        >
+          Are you sure you want to delete this product?
+        </Modal>
+      )}
     </>
   );
 }

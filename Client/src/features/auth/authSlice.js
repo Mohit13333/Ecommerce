@@ -71,12 +71,11 @@ export const {
   clearPasswordReset,
 } = authSlice.actions;
 
-// Create User Action
 export const createUserAction = (userData) => async (dispatch) => {
   dispatch(setLoading());
   try {
     const response = await createUser(userData);
-    localStorage.setItem("token", response.token); // Save the token from the response
+    localStorage.setItem("token", response.token);
     dispatch(setLoggedInUser(response.token));
     dispatch(clearError());
   } catch (error) {
@@ -86,14 +85,12 @@ export const createUserAction = (userData) => async (dispatch) => {
   }
 };
 
-
-// Login User Action
 export const loginUserAction = (loginInfo) => async (dispatch) => {
   dispatch(setLoading());
   try {
     const response = await loginUser(loginInfo);
-    localStorage.setItem("token", response.token); // Adjusted to access token directly
-    dispatch(setLoggedInUser(response.token)); // Adjusted to access token directly
+    localStorage.setItem("token", response.token);
+    dispatch(setLoggedInUser(response.token));
     dispatch(clearError());
   } catch (error) {
     dispatch(setError(error.message));
@@ -102,7 +99,6 @@ export const loginUserAction = (loginInfo) => async (dispatch) => {
   }
 };
 
-// Check Authentication Action
 export const checkAuthAction = () => async (dispatch) => {
   dispatch(setLoading());
   const token = localStorage.getItem("token");
@@ -112,12 +108,10 @@ export const checkAuthAction = () => async (dispatch) => {
     return;
   }
   try {
-    const response = await checkAuth(); // Assume this validates the token
-    dispatch(setLoggedInUser(response.token)); // Set token in the state
+    const response = await checkAuth();
+    dispatch(setLoggedInUser(response.token));
     dispatch(clearError());
   } catch (error) {
-    // localStorage.removeItem("token"); // Remove token if there's an error
-    // dispatch(clearToken());
     dispatch(setError(error.message));
   } finally {
     dispatch(setUserChecked());
@@ -125,7 +119,6 @@ export const checkAuthAction = () => async (dispatch) => {
   }
 };
 
-// Reset Password Request Action
 export const resetPasswordRequestAction = (email) => async (dispatch) => {
   dispatch(setLoading());
   try {
@@ -138,8 +131,6 @@ export const resetPasswordRequestAction = (email) => async (dispatch) => {
     dispatch(setIdle());
   }
 };
-
-// Reset Password Action
 export const resetPasswordAction = (data) => async (dispatch) => {
   dispatch(setLoading());
   try {
@@ -153,7 +144,6 @@ export const resetPasswordAction = (data) => async (dispatch) => {
   }
 };
 
-// Sign Out Action
 export const signOutAction = () => (dispatch) => {
   dispatch(setLoading());
   signOut();
@@ -162,7 +152,6 @@ export const signOutAction = () => (dispatch) => {
   dispatch(setIdle());
 };
 
-// Selectors
 export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
 export const selectError = (state) => state.auth.error;
 export const selectUserChecked = (state) => state.auth.userChecked;

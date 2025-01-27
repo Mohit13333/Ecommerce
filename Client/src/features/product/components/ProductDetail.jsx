@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
-import { StarIcon } from '@heroicons/react/20/solid';
-import { RadioGroup } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect } from "react";
+import { StarIcon } from "@heroicons/react/20/solid";
+import { RadioGroup } from "@headlessui/react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProductByIdAction,
-  selectProductById,
+  selectProductById, 
   selectProductListStatus,
-} from '../productSlice';
-import { useParams } from 'react-router-dom';
-import { addToCartAsync, selectItems } from '../../cart/cartSlice';
-import { Grid } from 'react-loader-spinner';
+} from "../productSlice";
+import { useParams } from "react-router-dom";
+import { addToCartAsync, selectItems } from "../../cart/cartSlice";
+import { Grid } from "react-loader-spinner";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function ProductDetail() {
@@ -24,16 +24,9 @@ export default function ProductDetail() {
   const params = useParams();
   const status = useSelector(selectProductListStatus);
 
-  // Fetch product data by ID
   useEffect(() => {
-    console.log(`Fetching product with ID: ${params.id}`);
     dispatch(fetchProductByIdAction(params.id));
   }, [dispatch, params.id]);
-
-  // Debugging: Check if product is being fetched
-  useEffect(() => {
-    console.log('Fetched product:', product);
-  }, [product]);
 
   const handleCart = (e) => {
     e.preventDefault();
@@ -49,14 +42,15 @@ export default function ProductDetail() {
         newItem.size = selectedSize;
       }
       dispatch(addToCartAsync(newItem));
-    } else {
-      alert('Item already added to the cart.');
-    }
+    } 
   };
+
+  const isOutOfStock = product && product.stock === 0;
+  const isLowStock = product && product.stock > 0 && product.stock <= 5; 
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {status === 'loading' ? (
+      {status === "loading" ? (
         <Grid
           height="80"
           width="80"
@@ -88,7 +82,6 @@ export default function ProductDetail() {
 
           <div className="container mx-auto mt-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Image Gallery */}
               <div className="flex overflow-x-auto p-2 space-x-4 scrollbar-hidden">
                 {product.images.map((image, index) => (
                   <div
@@ -103,34 +96,37 @@ export default function ProductDetail() {
                   </div>
                 ))}
               </div>
-
-              {/* Product Details */}
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <h1 className="text-2xl font-semibold text-gray-900">
                   {product.title}
                 </h1>
                 <p className="mt-2 text-gray-500">{product.description}</p>
-                <p className="mt-4 text-2xl text-gray-900">${product.discountPrice}</p>
-                <p className="text-gray-400 line-through">${product.price}</p>
-
-                {/* Reviews */}
+                <p className="mt-4 text-2xl text-gray-900">
+                  ₹{product.discountPrice}
+                </p>
+                <p className="text-gray-400 line-through">₹{product.price}</p>
                 <div className="mt-4 flex items-center space-x-2">
                   {[0, 1, 2, 3, 4].map((rating) => (
                     <StarIcon
                       key={rating}
                       className={classNames(
-                        product.rating > rating ? 'text-yellow-500' : 'text-gray-300',
-                        'h-5 w-5'
+                        product.rating > rating
+                          ? "text-yellow-500"
+                          : "text-gray-300",
+                        "h-5 w-5"
                       )}
                       aria-hidden="true"
                     />
                   ))}
-                  <span className="text-gray-500">{product.rating} out of 5</span>
+                  <span className="text-gray-500">
+                    {product.rating} out of 5
+                  </span>
+                  <span className={`font-semibold ${isOutOfStock ? 'text-red-500' : isLowStock ? 'text-yellow-500' : 'text-gray-500'}`}>
+                    Product available in stock: {isOutOfStock ? "Out of Stock" : product.stock}
+                  </span>
                 </div>
 
-                {/* Options */}
                 <form className="mt-6" onSubmit={handleCart}>
-                  {/* Colors */}
                   {product.colors && product.colors.length > 0 && (
                     <div className="mb-6">
                       <h3 className="text-sm font-medium text-gray-700">Color</h3>
@@ -141,20 +137,22 @@ export default function ProductDetail() {
                       >
                         {product.colors.map((color) => (
                           <RadioGroup.Option
-                            key={color.id}
+                            key={color}
                             value={color}
                             className={({ checked }) =>
                               classNames(
-                                checked ? 'ring-2 ring-indigo-500' : 'border border-gray-300',
-                                'flex items-center justify-center w-8 h-8 rounded-full cursor-pointer focus:outline-none'
+                                checked
+                                  ? "ring-2 ring-indigo-500"
+                                  : "border border-gray-300",
+                                "flex items-center justify-center w-8 h-8 rounded-full cursor-pointer focus:outline-none"
                               )
                             }
                           >
                             <span
                               aria-hidden="true"
                               className={classNames(
-                                color.class, // Ensure this class correctly applies the color
-                                'w-8 h-8 rounded-full'
+                                color.class,
+                                "w-8 h-8 rounded-full"
                               )}
                             />
                           </RadioGroup.Option>
@@ -162,8 +160,6 @@ export default function ProductDetail() {
                       </RadioGroup>
                     </div>
                   )}
-
-                  {/* Sizes */}
                   {product.sizes && product.sizes.length > 0 && (
                     <div>
                       <h3 className="text-sm font-medium text-gray-700">Size</h3>
@@ -174,28 +170,27 @@ export default function ProductDetail() {
                       >
                         {product.sizes.map((size) => (
                           <RadioGroup.Option
-                            key={size.id}
+                            key={size}
                             value={size}
                             className={({ checked }) =>
                               classNames(
                                 checked
-                                  ? 'bg-indigo-600 text-white'
-                                  : 'bg-white text-gray-900',
-                                'py-2 px-4 rounded-md border text-center shadow-sm cursor-pointer focus:outline-none'
+                                  ? "bg-indigo-600 text-white"
+                                  : "bg-white text-gray-900",
+                                "py-2 px-4 rounded-md border text-center shadow-sm cursor-pointer focus:outline-none"
                               )
                             }
                           >
-                            <span>{size.name}</span>
+                            <span>{size}</span>
                           </RadioGroup.Option>
                         ))}
                       </RadioGroup>
                     </div>
                   )}
-
-                  {/* Add to Cart Button */}
                   <button
                     type="submit"
-                    className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-md shadow-md hover:bg-indigo-700"
+                    className={`mt-6 w-full py-3 rounded-md shadow-md ${isOutOfStock ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 text-white hover:bg-indigo-700"}`}
+                    disabled={isOutOfStock} 
                   >
                     Add to cart
                   </button>

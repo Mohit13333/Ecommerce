@@ -11,7 +11,6 @@ let transporter = nodemailer.createTransport({
     pass: process.env.MAIL_PASSWORD,
   },
 });
-console.log(process.env.MAIL_USER, process.env.MAIL_PASSWORD);
 export const sanitizeUser = (user) => {
   return { id: user.id, role: user.role };
 };

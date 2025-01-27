@@ -50,7 +50,6 @@ export default function ResetPassword() {
               onSubmit={handleSubmit(onSubmit)}
               className="space-y-6"
             >
-              {/* New Password */}
               <div>
                 <label
                   htmlFor="password"
@@ -78,8 +77,6 @@ export default function ResetPassword() {
                   )}
                 </div>
               </div>
-
-              {/* Confirm Password */}
               <div>
                 <label
                   htmlFor="confirmPassword"
@@ -105,14 +102,10 @@ export default function ResetPassword() {
                   )}
                 </div>
               </div>
-
-              {/* Feedback Messages */}
               {passwordReset && (
                 <p className="text-green-500">Password Reset Successful!</p>
               )}
               {error && <p className="text-red-500">{error}</p>}
-
-              {/* Submit Button */}
               <div>
                 <button
                   type="submit"

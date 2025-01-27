@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-// Create an Axios instance with a base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URI, // Base URL for your API
+  baseURL: import.meta.env.VITE_BACKEND_URI,
 });
 
-// Function to add an item to the cart
 export const addToCart = async (item) => {
-  const token = localStorage.getItem('token'); // Replace 'token' with your actual key
+  const token = localStorage.getItem('token');
   try {
     const response = await api.post('/cart', item, {
       headers: { 
@@ -18,13 +16,12 @@ export const addToCart = async (item) => {
     return { data: response.data };
   } catch (error) {
     console.error('Error adding item to cart:', error);
-    throw error; // Optionally re-throw the error
+    throw error;
   }
 };
 
-// Function to fetch items by user ID
 export const fetchItemsByUserId = async () => {
-  const token = localStorage.getItem('token'); // Replace 'token' with your actual key
+  const token = localStorage.getItem('token');
   try {
     const response = await api.get('/cart', {
       headers: { 
@@ -34,13 +31,12 @@ export const fetchItemsByUserId = async () => {
     return { data: response.data };
   } catch (error) {
     console.error('Error fetching items from cart:', error);
-    throw error; // Optionally re-throw the error
+    throw error;
   }
 };
 
-// Function to update an item in the cart
 export const updateCart = async (update) => {
-  const token = localStorage.getItem('token'); // Replace 'token' with your actual key
+  const token = localStorage.getItem('token');
   try {
     const response = await api.patch(`/cart/${update.id}`, update, {
       headers: { 
@@ -51,13 +47,12 @@ export const updateCart = async (update) => {
     return { data: response.data };
   } catch (error) {
     console.error('Error updating cart item:', error);
-    throw error; // Optionally re-throw the error
+    throw error;
   }
 };
 
-// Function to delete an item from the cart
 export const deleteItemFromCart = async (itemId) => {
-  const token = localStorage.getItem('token'); // Replace 'token' with your actual key
+  const token = localStorage.getItem('token');
   try {
     await api.delete(`/cart/${itemId}`, {
       headers: { 
@@ -68,23 +63,22 @@ export const deleteItemFromCart = async (itemId) => {
     return { data: { id: itemId } };
   } catch (error) {
     console.error('Error deleting item from cart:', error);
-    throw error; // Optionally re-throw the error
+    throw error;
   }
 };
 
-// Function to reset the cart by deleting all items
 export const resetCart = async () => {
   try {
-    const itemsResponse = await fetchItemsByUserId(); // Fetch all items
+    const itemsResponse = await fetchItemsByUserId();
     const items = itemsResponse.data;
 
     for (const item of items) {
-      await deleteItemFromCart(item.id); // Delete each item
+      await deleteItemFromCart(item.id);
     }
 
     return { status: 'success' };
   } catch (error) {
     console.error('Error resetting cart:', error);
-    throw error; // Optionally re-throw the error
+    throw error;
   }
 };

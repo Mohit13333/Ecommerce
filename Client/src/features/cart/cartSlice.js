@@ -7,7 +7,6 @@ const initialState = {
   cartLoaded: false,
 };
 
-// Action creators
 const addToCartAction = (item) => ({ type: 'cart/addToCart', payload: item });
 const fetchItemsByUserIdAction = () => ({ type: 'cart/fetchItemsByUserId' });
 const updateCartAction = (update) => ({ type: 'cart/updateCart', payload: update });
@@ -18,7 +17,6 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    // Handle synchronous actions
     addToCartPending: (state) => {
       state.status = 'loading';
     },
@@ -68,7 +66,6 @@ export const cartSlice = createSlice({
   },
 });
 
-// Thunk-like functions for async actions
 export const addToCartAsync = (item) => async (dispatch) => {
   dispatch(cartSlice.actions.addToCartPending());
   try {
@@ -121,7 +118,6 @@ export const resetCartAsync = () => async (dispatch) => {
   }
 };
 
-// Selectors
 export const selectItems = (state) => state.cart.items;
 export const selectCartStatus = (state) => state.cart.status;
 export const selectCartLoaded = (state) => state.cart.cartLoaded;

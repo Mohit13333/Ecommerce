@@ -13,16 +13,16 @@ import Modal from '../common/Modal';
 
 export default function Cart() {
   const dispatch = useDispatch();
-
   const items = useSelector(selectItems);
   const status = useSelector(selectCartStatus);
   const cartLoaded = useSelector(selectCartLoaded);
   const [openModal, setOpenModal] = useState(null);
 
   const totalAmount = items.reduce(
-    (amount, item) => item.product.discountPrice * item.quantity + amount,
+    (amount, item) => (item.product ? item.product.discountPrice * item.quantity + amount : amount),
     0
   );
+  
   const totalItems = items.reduce((total, item) => item.quantity + total, 0);
 
   const handleQuantity = (e, item) => {
@@ -35,14 +35,9 @@ export default function Cart() {
 
   return (
     <>
-      {/* Redirect if cart is empty and loaded */}
-      {/* {!items.length && cartLoaded && <Navigate to="/" replace={true}></Navigate>} */}
-
       <div className="mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-6">
-            Cart
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 mb-6">Cart</h1>
           <div className="flow-root">
             {status === 'loading' && (
               <Grid
@@ -58,11 +53,11 @@ export default function Cart() {
             )}
             <ul className="-my-6 divide-y divide-gray-200">
               {items.map((item) => (
-                <li key={item.id} className="flex py-6">
+                <li key={item?.id} className="flex py-6">
                   <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                     <img
-                      src={item.product.thumbnail}
-                      alt={item.product.title}
+                      src={item?.product?.thumbnail}
+                      alt={item?.product?.title}
                       className="h-full w-full object-cover object-center"
                     />
                   </div>
@@ -71,11 +66,15 @@ export default function Cart() {
                     <div>
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <h3>
-                          <Link to={`/product/${item.product.id}`} className="hover:underline">{item.product.title}</Link>
+                          <Link to={`/product/${item?.product?.id}`} className="hover:underline">
+                            {item?.product?.title || 'Product Unavailable'}
+                          </Link>
                         </h3>
-                        <p className="ml-4 text-indigo-600">${item.product.discountPrice.toFixed(2)}</p>
+                        <p className="ml-4 text-indigo-600">
+                          ₹{item?.product?.discountPrice ? item.product.discountPrice.toFixed(2) : 'N/A'}
+                        </p>
                       </div>
-                      <p className="mt-1 text-sm text-gray-500">{item.product.brand}</p>
+                      <p className="mt-1 text-sm text-gray-500">{item?.product?.brand || 'Unknown Brand'}</p>
                     </div>
                     <div className="flex flex-1 items-end justify-between text-sm">
                       <div className="text-gray-500">
@@ -97,7 +96,7 @@ export default function Cart() {
 
                       <div className="flex">
                         <Modal
-                          title={`Delete ${item.product.title}`}
+                          title={`Delete ${item.product?.title || 'Item'}`}
                           message="Are you sure you want to delete this Cart item?"
                           dangerOption="Delete"
                           cancelOption="Cancel"
@@ -125,7 +124,7 @@ export default function Cart() {
           <h2 className="text-xl font-semibold text-gray-900">Order Summary</h2>
           <div className="flex justify-between my-2 text-base font-medium text-gray-900">
             <p>Subtotal</p>
-            <p>${totalAmount.toFixed(2)}</p>
+            <p>₹{totalAmount.toFixed(2)}</p>
           </div>
           <div className="flex justify-between my-2 text-base font-medium text-gray-900">
             <p>Total Items in Cart</p>

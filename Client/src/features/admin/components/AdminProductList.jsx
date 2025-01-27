@@ -33,8 +33,26 @@ export default function AdminProductList() {
   const totalItems = useSelector(selectTotalItems);
   
   const filters = [
-    { id: "category", name: "Category", options: categories || [] },
-    { id: "brand", name: "Brands", options: brands || [] },
+    {
+      id: "category",
+      name: "Category",
+      options: Array.isArray(categories)
+        ? categories.map((cat) => ({
+            label: cat.name,
+            value: cat.id,
+          }))
+        : [],
+    },
+    {
+      id: "brands",
+      name: "Brands",
+      options: Array.isArray(brands)
+        ? brands.map((brand) => ({
+            label: brand.name,
+            value: brand.id,
+          }))
+        : [],
+    },
   ];
 
   const [filter, setFilter] = useState({});
@@ -316,7 +334,7 @@ function ProductGrid({ products }) {
                   </a>
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">{product.description || "No Description"}</p>
-                <p className="mt-1 text-lg font-semibold text-gray-900">${product.price.toFixed(2)}</p>
+                <p className="mt-1 text-lg font-semibold text-gray-900">₹{product.price.toFixed(2)}</p>
               </div>
             </div>
           </div>

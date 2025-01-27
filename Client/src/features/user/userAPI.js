@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Navigate } from "react-router-dom";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URI,
@@ -17,7 +18,6 @@ export const fetchLoggedInUserOrders = async () => {
     const response = await apiClient.get("/orders/own/", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error("Error fetching user orders:", error);
@@ -31,10 +31,14 @@ export const fetchLoggedInUser = async () => {
     const response = await apiClient.get("/users/own", {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log("User info response:", response);
     return response.data;
   } catch (error) {
     console.error("Error fetching user info:", error);
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token')
+      console.warn("Token expired or invalid. Redirecting to login...");
+      Navigate = "/login";
+    }
     throw error.response ? error.response.data : { message: "Network Error" };
   }
 };

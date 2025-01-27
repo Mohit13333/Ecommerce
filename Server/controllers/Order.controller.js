@@ -17,45 +17,31 @@ export const fetchOrdersByUser = async (req, res) => {
 export const createOrder = async (req, res) => {
   try {
     const order = new Order(req.body);
-    console.log("Order items received:", req.body);
 
-    
-    // Loop through order items to update product stock
     for (let item of order.items) {
-      let product = await Product.findById(item.productId); // Fetch product by ID
-
-      // Check if product exists
+      let product = await Product.findById(item.productId); 
       if (!product) {
         return res.status(404).json({ message: `Product not found: ${item.productId}` });
       }
 
-      // Check for sufficient stock
       if (product.stock < item.quantity) {
         return res.status(400).json({ message: `Insufficient stock for product: ${item.productId}` });
       }
 
-      // Update the stock
-      product.stock -= item.quantity; // Deduct the quantity
-      await product.save(); // Save the updated product
+      product.stock -= item.quantity; 
+      await product.save(); 
     }
 
-    // Save the order to the database
-    const savedOrder = await order.save(); // Save order first
-
-    // Populate product details in the saved order
+    const savedOrder = await order.save(); 
     const populatedOrder = await Order.findById(savedOrder._id).populate('items.productId');
 
-    // Fetch the user associated with the order
     const user = await User.findById(order.user);
     
-    // Send email notification with proper structure
     await sendMail({
       to: user.email,
-      html: invoiceTemplate(populatedOrder.items), // Pass the populated order items to the template
+      html: invoiceTemplate(populatedOrder.items),
       subject: "Order Received",
     });
-
-    // Return the populated order
     res.status(201).json(populatedOrder);
   } catch (err) {
     console.error('Error creating order:', err);

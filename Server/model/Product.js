@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const productSchema = new Schema({
-  title: { type: String, required: true, unique: true },
+  title: { type: String, required: true },
   description: { type: String, required: true },
   price: {
     type: Number,
@@ -21,8 +21,12 @@ const productSchema = new Schema({
     default: 0,
   },
   stock: { type: Number, min: [0, "wrong min stock"], default: 0 },
-  brand: { type: String, required: true },
-  category: { type: String, required: true },
+  brand: { type: mongoose.Schema.Types.ObjectId, ref: "Brand", required: true },
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
   thumbnail: { type: String, required: true },
   images: { type: [String], required: true },
   colors: { type: [Schema.Types.Mixed] },

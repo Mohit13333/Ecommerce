@@ -15,12 +15,12 @@ const orderSchema = new Schema(
           ref: "Product",
           required: true,
         },
-        quantity: { type: Number, required: true, min: 1 }, // Ensuring quantity is at least 1
-        price: { type: Number, required: true, min: 0 }, // Price should be non-negative
+        quantity: { type: Number, required: true, min: 1 }, 
+        price: { type: Number, required: true, min: 0 }, 
       },
     ],
-    totalAmount: { type: Number, required: true, min: 0 }, // Ensure totalAmount is non-negative
-    totalItems: { type: Number, required: true, min: 0 }, // Ensure totalItems is non-negative
+    totalAmount: { type: Number, required: true, min: 0 }, 
+    totalItems: { type: Number, required: true, min: 0 }, 
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     paymentMethod: {
       type: String,
@@ -31,7 +31,7 @@ const orderSchema = new Schema(
       type: String,
       default: "pending",
       enum: ["pending", "failed", "received","refunded"],
-    }, // Added received
+    },
 
     status: {
       type: String,
@@ -44,20 +44,18 @@ const orderSchema = new Schema(
   { timestamps: true }
 );
 
-// Virtual for id
 orderSchema.virtual("id").get(function () {
-  return this._id.toString(); // Ensure id is returned as a string
+  return this._id.toString
 });
 
-// Set toJSON options
 orderSchema.set("toJSON", {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
-    delete ret._id; // Remove _id
-    return ret; // Return the transformed object
+    delete ret._id; 
+    return ret; 
   },
 });
 
-// Create the model
+
 export const Order = mongoose.model("Order", orderSchema);
